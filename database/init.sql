@@ -1,0 +1,90 @@
+CREATE DATABASE ecommerce;
+
+\c ecommerce
+
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE profiles (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id),
+  first_name VARCHAR(50),
+  last_name VARCHAR(50),
+  address TEXT,
+  phone VARCHAR(20),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE products (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  description TEXT,
+  price NUMERIC(10, 2) NOT NULL,
+  category_id INTEGER REFERENCES categories(id),
+  group_id INTEGER REFERENCES groups(id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE services (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  description TEXT,
+  price NUMERIC(10, 2) NOT NULL,
+  category_id INTEGER REFERENCES categories(id),
+  group_id INTEGER REFERENCES groups(id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE categories (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE groups (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE tags (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE product_tags (
+  id SERIAL PRIMARY KEY,
+  product_id INTEGER REFERENCES products(id),
+  tag_id INTEGER REFERENCES tags(id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE service_tags (
+  id SERIAL PRIMARY KEY,
+  service_id INTEGER REFERENCES services(id),
+  tag_id INTEGER REFERENCES tags(id),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE invoices (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id),
+  total_amount NUMERIC(10, 2) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE invoice_items (
+  id SERIAL PRIMARY KEY,
+  invoice_id INTEGER REFERENCES invoices(id),
+  product_id INTEGER REFERENCES products(id),
+  service_id INTEGER REFERENCES services(id),
+  quantity INTEGER NOT NULL,
+  price NUMERIC(10, 2) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
